@@ -20,14 +20,32 @@ class Cell {
 }
 const Board = {
   cells: undefined,
+  destination: undefined,
   make: () => {
     this.cells = Array.from({ length: 8 }, (_, i) => {
       return Array.from(
         { length: 8 },
-        (_, q) => new Cell(q, i, (q + i) % 2, false)
+        (_, q) => new Cell(q - 1, i - 1, (q + i) % 2, false)
       );
     });
-    alert(this.cells);
+    this.draw();
+  },
+  draw: () => {},
+};
+const DOC = {
+  e: document,
+  body: document.body,
+  create: (tag, id = "", ...classes) => {
+    let e = this.e.createElement(tag);
+    e.id = id;
+    if (classes.length > 1) e.classList.add(classes);
+    return e;
+  },
+  get: (arg) => {
+    return document.querySelector(arg);
+  },
+  getALL: (arg) => {
+    return Array.from(document.querySelectorAll(arg));
   },
 };
 Board.make();
