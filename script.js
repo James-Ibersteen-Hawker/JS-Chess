@@ -11,12 +11,23 @@ class Cell {
   }
   path(...directions) {
     let hold = this;
+    alert(hold);
     directions.forEach((e) => {
-      hold = grid[(hold.x + e.x, hold.y + e.y)];
-      if (hold.contains) {
-        
-      }
+      alert(e);
     });
-    return
+    return;
   }
 }
+const Board = {
+  cells: undefined,
+  make: () => {
+    this.cells = Array.from({ length: 8 }, (_, i) => {
+      return Array.from(
+        { length: 8 },
+        (_, q) => new Cell(q, i, (q + i) % 2, false)
+      );
+    });
+    alert(this.cells);
+  },
+};
+Board.make();
