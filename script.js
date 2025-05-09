@@ -18,10 +18,26 @@ class Cell {
     return;
   }
 }
+const DOC = {
+  e: document,
+  body: document.body,
+  create: function (tag, id = "", ...classes) {
+    let e = this.e.createElement(tag);
+    e.id = id;
+    if (classes.length > 0) e.className = classes.join(" ");
+    return e;
+  },
+  get: (arg) => {
+    return document.querySelector(arg);
+  },
+  getALL: (arg) => {
+    return Array.from(document.querySelectorAll(arg));
+  },
+};
 const Board = {
   cells: undefined,
-  destination: undefined,
-  make: () => {
+  destination: DOC.get("#container"),
+  make: function () {
     this.cells = Array.from({ length: 8 }, (_, i) => {
       return Array.from(
         { length: 8 },
@@ -30,22 +46,16 @@ const Board = {
     });
     this.draw();
   },
-  draw: () => {},
-};
-const DOC = {
-  e: document,
-  body: document.body,
-  create: (tag, id = "", ...classes) => {
-    let e = this.e.createElement(tag);
-    e.id = id;
-    if (classes.length > 1) e.classList.add(classes);
-    return e;
-  },
-  get: (arg) => {
-    return document.querySelector(arg);
-  },
-  getALL: (arg) => {
-    return Array.from(document.querySelectorAll(arg));
+  draw: function () {
+    this.cells.forEach((col, i) => {
+      let row = DOC.create("div", "", "row");
+      col.forEach((cell, q) => {
+        cell.color == 1
+          ? row.append(DOC.create("div", `c${i}${q}`, "black", "cell"))
+          : row.append(DOC.create("div", `c${i}${q}`, "white", "cell"));
+      });
+      this.destination.append(row);
+    });
   },
 };
 Board.make();
