@@ -121,16 +121,16 @@ const Board = {
     this.set();
   },
   set: function () {
-    this.pieces.forEach((set) => {
+    this.pieces.forEach((set, i) => {
       const pieceArr = ["rook", "knight", "bishop", "queen", "king"];
       pieceArr.forEach((p) => {
-        set.push(new Piece(p, "color", pieceDict[p], 0));
+        set.push(new Piece(p, (i + colorTop) % 2, pieceDict[p], 0));
       });
       pieceArr
         .slice(0, 3)
         .reverse()
         .forEach((p) => {
-          set.push(new Piece(p, "color", pieceDict[p], 0));
+          set.push(new Piece(p, (i + colorTop) % 2, pieceDict[p], 0));
         });
       set = [set];
       set.push(
@@ -139,7 +139,10 @@ const Board = {
           (_, i) => new Piece("pawn", "color", pieceDict["pawn"], "number")
         )
       );
+      i == 1 ? (set = set.reverse()) : (set = set);
     });
   },
 };
 Board.make();
+
+//colorTop = 0; 0 + 1 mod 2 = 1, 1 + 1 mod 2 = 0
