@@ -77,22 +77,17 @@ class Piece {
   color;
   path;
   number;
-  constructor(name, color, path, number) {
+  took;
+  constructor(name, color, path, number, took) {
     (this.name = name),
       (this.color = color),
       (this.path = path),
-      (this.number = number);
+      (this.number = number),
+      (this.took = took);
   }
   move() {}
-  init(loc) {
-    loc.append(
-      DOC.create(
-        "div",
-        `${this.name}${this.number}${this.color}`,
-        this.name,
-        "piece"
-      )
-    );
+  init(location) {
+    console.log(location, this.name, this.color);
   }
 }
 const Board = {
@@ -123,23 +118,34 @@ const Board = {
   set: function () {
     this.pieces.forEach((set, i) => {
       const pieceArr = ["rook", "knight", "bishop", "queen", "king"];
+      let arr = [];
       pieceArr.forEach((p) => {
-        set.push(new Piece(p, (i + colorTop) % 2, pieceDict[p], 0));
+        arr.push(new Piece(p, (i + colorTop) % 2, pieceDict[p], 0));
       });
       pieceArr
         .slice(0, 3)
         .reverse()
         .forEach((p) => {
-          set.push(new Piece(p, (i + colorTop) % 2, pieceDict[p], 0));
+          arr.push(new Piece(p, (i + colorTop) % 2, pieceDict[p], 0));
         });
-      set = [set];
+      set.push(arr);
       set.push(
         Array.from(
           { length: this.cells.length },
-          (_, i) => new Piece("pawn", "color", pieceDict["pawn"], "number")
+          (_, q) =>
+            new Piece("pawn", (i + colorTop) % 2, pieceDict["pawn"], "number")
         )
       );
       i == 1 ? (set = set.reverse()) : (set = set);
+    });
+    this.pieces.forEach((side, i) => {
+      side.forEach((row, q) => {
+        row.forEach((piece, z) => {
+          piece.init(
+            DOC.get(`#c${q + (this.cells.length - side.length) * i}${z}`)
+          );
+        });
+      });
     });
   },
 };
