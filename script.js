@@ -148,25 +148,22 @@ const Board = {
             //row offset + grid offset * i
             DOC.get(`#c${q + (this.cells.length - side.length) * i}${z}`)
           );
-          piece.coords = {
-            x: z,
-            y: q + (this.cells.length - side.length) * i,
-          };
-        });
-      });
-    });
-    this.iter();
-  },
-  iter: function () {
-    this.cells.forEach((col, i) => {
-      col.forEach((cell, q) => {
-        this.pieces.flat(Infinity).forEach((p) => {
-          if (p.coords.x === q && p.coords.y === i) cell.contains = p;
-          else cell.contains = false;
+          this.cells[q + (this.cells.length - side.length) * i][z].contains =
+            piece;
         });
       });
     });
   },
+  // iter: function () {
+  //   this.cells.forEach((col, i) => {
+  //     col.forEach((cell, q) => {
+  //       this.pieces.flat(Infinity).forEach((p) => {
+  //         if (p.coords.x === q && p.coords.y === i) cell.contains = p;
+  //         else cell.contains = false;
+  //       });
+  //     });
+  //   });
+  // },
 };
 Board.make();
 
