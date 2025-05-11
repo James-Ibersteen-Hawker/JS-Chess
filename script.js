@@ -56,12 +56,15 @@ class Cell {
   x;
   y;
   color;
-  contains;
-  constructor(x, y, color, contains) {
-    (this.x = x),
-      (this.y = y),
-      (this.color = color),
-      (this.contains = contains);
+  #contains;
+  constructor(x, y, color) {
+    (this.x = x), (this.y = y), (this.color = color);
+  }
+  get contains() {
+    return this.#contains;
+  }
+  set contains(obj) {
+    //do something on prop set
   }
   path(...directions) {
     let hold = this;
@@ -87,7 +90,7 @@ class Piece {
   }
   move() {}
   init(location) {
-    console.log(location, this.name, this.color);
+    location.textContent = `${this.name} ${this.color}`;
   }
 }
 const Board = {
@@ -107,7 +110,7 @@ const Board = {
     this.cells.forEach((col, i) => {
       let row = DOC.create("div", "", "row");
       col.forEach((cell, q) => {
-        cell.color == 1
+        cell.color === 1
           ? row.append(DOC.create("div", `c${i}${q}`, "black", "cell"))
           : row.append(DOC.create("div", `c${i}${q}`, "white", "cell"));
       });
@@ -136,14 +139,30 @@ const Board = {
             new Piece("pawn", (i + colorTop) % 2, pieceDict["pawn"], "number")
         )
       );
-      i == 1 ? (set = set.reverse()) : (set = set);
+      i === 1 ? (set = set.reverse()) : (set = set);
     });
     this.pieces.forEach((side, i) => {
       side.forEach((row, q) => {
         row.forEach((piece, z) => {
           piece.init(
+            //row offset + grid offset * i
             DOC.get(`#c${q + (this.cells.length - side.length) * i}${z}`)
           );
+          piece.coords = {
+            x: z,
+            y: q + (this.cells.length - side.length) * i,
+          };
+        });
+      });
+    });
+    this.iter();
+  },
+  iter: function () {
+    this.cells.forEach((col, i) => {
+      col.forEach((cell, q) => {
+        this.pieces.flat(Infinity).forEach((p) => {
+          if (p.coords.x === q && p.coords.y === i) cell.contains = p;
+          else cell.contains = false;
         });
       });
     });
