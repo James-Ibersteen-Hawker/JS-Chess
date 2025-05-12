@@ -64,7 +64,13 @@ class Cell {
     return this.#contains;
   }
   set contains(obj) {
-    //do something on prop set
+    const cellOBJ = DOC.get(`#c${this.y}${this.x}`);
+    alert(`c${this.y}${this.x}`);
+    function onclick() {
+      alert(this.contains.name);
+    }
+    if (obj) cellOBJ.addEventListener("click", onclick);
+    else cellOBJ.removeEventListener("click", onclick);
   }
   path(...directions) {
     let hold = this;
@@ -101,22 +107,24 @@ const Board = {
     this.cells = Array.from({ length: 8 }, (_, i) => {
       return Array.from(
         { length: 8 },
-        (_, q) => new Cell(q - 1, i - 1, (q + i) % 2, false)
+        (_, q) => new Cell(q, i, (q + i) % 2, false)
       );
     });
-    this.draw();
+    this.draw().then(this.set()).catch(alert("error"));
   },
   draw: function () {
-    this.cells.forEach((col, i) => {
-      let row = DOC.create("div", "", "row");
-      col.forEach((cell, q) => {
-        cell.color === 1
-          ? row.append(DOC.create("div", `c${i}${q}`, "black", "cell"))
-          : row.append(DOC.create("div", `c${i}${q}`, "white", "cell"));
+    return new Promise((resolve, reject) => {
+      this.cells.forEach((col, i) => {
+        let row = DOC.create("div", "", "row");
+        col.forEach((cell, q) => {
+          cell.color === 1
+            ? row.append(DOC.create("div", `c${i}${q}`, "black", "cell"))
+            : row.append(DOC.create("div", `c${i}${q}`, "white", "cell"));
+        });
+        this.destination.append(row);
       });
-      this.destination.append(row);
+      resolve();
     });
-    this.set();
   },
   set: function () {
     this.pieces.forEach((set, i) => {
@@ -154,16 +162,6 @@ const Board = {
       });
     });
   },
-  // iter: function () {
-  //   this.cells.forEach((col, i) => {
-  //     col.forEach((cell, q) => {
-  //       this.pieces.flat(Infinity).forEach((p) => {
-  //         if (p.coords.x === q && p.coords.y === i) cell.contains = p;
-  //         else cell.contains = false;
-  //       });
-  //     });
-  //   });
-  // },
 };
 Board.make();
 
