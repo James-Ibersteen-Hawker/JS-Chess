@@ -36,6 +36,14 @@ const pieceDict = {
     infinite: false,
   },
 };
+const shapeDict = {
+  pawn: (loc) => {},
+  rook: (loc) => {},
+  knight: (loc) => {},
+  bishop: (loc) => {},
+  queen: (loc) => {},
+  king: (loc) => {},
+};
 const DOC = {
   e: document,
   body: document.body,
@@ -65,9 +73,8 @@ class Cell {
   }
   set contains(obj) {
     const cellOBJ = DOC.get(`#c${this.y}${this.x}`);
-    alert(`c${this.y}${this.x}`);
     function onclick() {
-      alert(this.contains.name);
+      alert(obj.name);
     }
     if (obj) cellOBJ.addEventListener("click", onclick);
     else cellOBJ.removeEventListener("click", onclick);
@@ -96,7 +103,7 @@ class Piece {
   }
   move() {}
   init(location) {
-    location.textContent = `${this.name} ${this.color}`;
+    // location.textContent = `${this.name} ${this.color}`;
   }
 }
 const Board = {
@@ -110,7 +117,9 @@ const Board = {
         (_, q) => new Cell(q, i, (q + i) % 2, false)
       );
     });
-    this.draw().then(this.set()).catch(alert("error"));
+    this.draw()
+      .then(this.set())
+      .catch((error) => console.error(error));
   },
   draw: function () {
     return new Promise((resolve, reject) => {
@@ -120,6 +129,7 @@ const Board = {
           cell.color === 1
             ? row.append(DOC.create("div", `c${i}${q}`, "black", "cell"))
             : row.append(DOC.create("div", `c${i}${q}`, "white", "cell"));
+          // DOC.get(`#c${i}${q}`).append(DOC.create("canvas", `ctx${i}${q}`));
         });
         this.destination.append(row);
       });
@@ -164,5 +174,3 @@ const Board = {
   },
 };
 Board.make();
-
-//colorTop = 0; 0 + 1 mod 2 = 1, 1 + 1 mod 2 = 0
